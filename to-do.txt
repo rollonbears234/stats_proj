@@ -1,0 +1,11 @@
+To Do: 
+
+Make sure you can replicate everything in, have a setup script that sets up the entire directory system, 
+ - use the file exists command 
+ - 
+
+Raw data is just the one you import, the data is processed? 
+
+Delete this before share with professor 
+
+use git

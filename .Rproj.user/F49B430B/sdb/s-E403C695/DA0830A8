@@ -1,0 +1,18 @@
+{
+    "contents" : "#Script to get data from http://www.crowdflower.com/data-for-everyone\n\nif(!file.exists(\"/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/GOP_REL_ONLY.csv\")) {\ndownload.file(\"http://cdn2.hubspot.net/hubfs/346378/DFE_CSVs/GOP_REL_ONLY.csv?t=1447202498004\", \n              destfile = \"/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/GOP_REL_ONLY.csv\")\n} else {\n    print(\"File already exists\")  \n}\n\n",
+    "created" : 1447352461957.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3082090296",
+    "id" : "DA0830A8",
+    "lastKnownWriteTime" : 1447353660,
+    "path" : "~/Dropbox/Group Proj Stats133/code/get_data.R",
+    "project_path" : "code/get_data.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "type" : "r_source"
+}

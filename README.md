@@ -1,0 +1,1 @@
+The goal of this project is to analyze the GOP through sentiment data based on the first debate. 
