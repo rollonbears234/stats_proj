@@ -1,3 +1,6 @@
+You need to make the files pathes relative, the current way you have it will not work
+code <= 80 characters!! 
+
 #Script to get data from http://www.crowdflower.com/data-for-everyone
 
 if(!file.exists("/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/GOP_REL_ONLY.csv")) {
