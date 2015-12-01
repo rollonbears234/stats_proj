@@ -1,6 +1,6 @@
 #GOP Candidate Information Cleaning 
 
-gop_data <- read.csv("rawdata/twitter_debate.csv")
+gop_twitter <- read.csv("rawdata/twitter_debate.csv")
 summary(gop_data)
 head(gop_data)
 
@@ -8,18 +8,18 @@ head(gop_data)
 
 #Campaign Contribution Cleaning 
 
-campaign_contribution <- read.csv("rawdata/P00000001-ALL.csv")
-summary(campaign_contribution)
-
-campaign_something <- read.csv("rawdata/P00000001D-ALL.csv")
-
+campaign_exp <- read.csv("rawdata/ind_expenditure.csv")
+summary(campaign_exp)
+head(campaign_exp)
 
 
 #Polling information
-polling <- read.csv("rawdata/2016-national-gop-primary.csv")
-
+polling <- read.csv("rawdata/polling.csv")
+summary(polling)
+head(polling)
 
 #Combining Cleaned data 
 
 #merge all dataframes here and then write it to a csv file
+#merge polling, campaign_exp, and gop_twitter, if you can even do that?? idk 
 write.csv(file = "data/republican_race.csv", combined_df here)
