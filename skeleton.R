@@ -1,42 +1,88 @@
-You need to make the files pathes relative, the current way you have it will not work
-code <= 80 characters!! 
+#code <= 80 characters!! 
+#Relative paths such that the script is being called from within the Group Proj Stats133 folder 
+#maybe change the names too to make it more readable 
 
-#Script to get data from http://www.crowdflower.com/data-for-everyone
+  
+#setup all subdirectories 
+dir.create("rawdata")
+dir.create("code")
+dir.create("resources")
+dir.create("report")
+dir.create("images")
+dir.create("data")
 
-if(!file.exists("/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/GOP_REL_ONLY.csv")) {
-	download.file("http://cdn2.hubspot.net/hubfs/346378/DFE_CSVs/GOP_REL_ONLY.csv?t=1447202498004", 
-              destfile = "/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/GOP_REL_ONLY.csv")
+
+#Getting twitter data 
+if (file.exists("rawdata/GOP_REL_ONLY.csv")) {
+  file.rename(from = "rawdata/GOP_REL_ONLY.csv", to = "rawdata/twitter_debate.csv")
+} else if (!file.exists("rawdata/twitter_debate.csv")) {
+	download.file(
+	"http://cdn2.hubspot.net/hubfs/346378/DFE_CSVs/GOP_REL_ONLY.csv?t=1447202498004", 
+              destfile = "rawdata/GOP_REL_ONLY.csv")
+  file.rename(from = "rawdata/GOP_REL_ONLY.csv", to = "rawdata/twitter_debate.csv")
 } else {
-    print("File already exists")  
+  print("File already exists") 
 }
 
 
-if(!file.exists("/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/2016-national-gop-primary.csv")){
-	download.file("http://elections.huffingtonpost.com/pollster/2016-national-gop-primary.csv", 
-	              destfile = "/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/2016-national-gop-primary.csv")
-} else {
-	    print("File already exists")  
-}
-
-
-#Download from a zip file as well, how to http://stackoverflow.com/questions/3053833/using-r-to-download-zipped-data-file-extract-and-import-data
-#expenditure data 
-#http://www.fec.gov/disclosurep/PDownload.do
-
-
-if(!file.exists("/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/P00000001D-ALL.csv")){
-	download.file("http://elections.huffingtonpost.com/pollster/2016-national-gop-primary.csv", 
-	              destfile = "/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/P00000001D-ALL.csv")
-} else {
-	    print("File already exists")  
-}
-
-if(!file.exists("/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/P00000001-ALL.csv")){
+#Getting Polling data for the candidates 
+if (file.exists("rawdata/2016-national-gop-primary.csv.csv")) {
+  file.rename(from = "rawdata/2016-national-gop-primary.csv", to = "rawdata/polling.csv")
+} else if(!file.exists("rawdata/polling.csv")){
 	download.file(
 	"http://elections.huffingtonpost.com/pollster/2016-national-gop-primary.csv", 
-	destfile = "/Users/bryanalcorn/Dropbox/Group Proj Stats133/rawdata/P00000001-ALL.csv")
+	              destfile = "rawdata/2016-national-gop-primary.csv")
+  file.rename(from = "rawdata/2016-national-gop-primary.csv", to = "rawdata/polling.csv")
 } else {
 	    print("File already exists")  
 }
+
+#Getting Independent expenditure data for the candidates 
+if (file.exists("rawdata/independent-expenditure.csv")) {
+  file.rename(from = "rawdata/independent-expenditure.csv", 
+              to = "rawdata/ind_expenditure.csv")
+} else if (!file.exists("rawdata/ind_expenditure.csv")){
+  download.file(
+    "http://www.fec.gov/data/IndependentExpenditure.do?format=csv", 
+    destfile = "rawdata/independent-expenditure.csv")
+  file.rename(from = "rawdata/independent-expenditure.csv", 
+              to = "rawdata/ind_expenditure.csv")
+} else {
+  print("File already exists")  
+}
+
+
+#expenditure data 
+#from http://www.fec.gov/disclosurep/PDownload.do
+#backup link http://www.fec.gov/data/DataCatalog.do
+
+if (file.exists("rawdata/P00000001D-ALL.csv")) {
+  file.rename("rawdata/P00000001D-ALL.csv", "rawdata/expenditure_data.csv")
+} else if(!file.exists("rawdata/expenditure_data.csv")){
+  download.file("ftp://ftp.fec.gov/FEC/Presidential_Map/2016/P00000001/P00000001D-ALL.zip",
+                "rawdata/P00000001D-ALL.zip")
+  unzip("rawdata/P00000001D-ALL.zip", exdir = "rawdata/")
+  file.rename("rawdata/P00000001D-ALL.csv", "rawdata/expenditure_data.csv")
+  file.remove("rawdata/P00000001D-ALL.zip")
+} else {
+	    print("File already exists")  
+}
+
+
+#Getting contributor data 
+if (file.exists("rawdata/P00000001-ALL.csv")) {
+  file.rename("rawdata/P00000001-ALL.csv", "rawdata/contributor_data.csv")
+} else if(!file.exists("rawdata/contributor_data.csv")){
+  download.file("ftp://ftp.fec.gov/FEC/Presidential_Map/2016/P00000001/P00000001-ALL.zip",
+                "rawdata/P00000001-ALL.zip")
+  unzip("rawdata/P00000001-ALL.zip", exdir = "rawdata/")
+  file.rename("rawdata/P00000001-ALL.csv", "rawdata/contributor_data.csv")
+  file.remove("rawdata/P00000001-ALL.zip")
+} else {
+  print("File already exists")  
+}
+
+
+
 
 
