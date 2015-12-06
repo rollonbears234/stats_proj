@@ -48,10 +48,14 @@ debate_time <- function(time, date) {
 
 
 
-
 deb_time <- debate_time(time = gop_tweets$time)
 deb_time
 
+##Hashtags
+library(stringr)
+hashtags <- str_extract(gop_tweets$text, "#.*")
+hashtags <- gsub(" [[:alpha:]].*", "", hashtags)
+goptweets$hashtags <- hashtags
 
 
 #Campaign Contribution Cleaning 
@@ -66,7 +70,20 @@ polling <- read.csv("rawdata/polling.csv")
 summary(polling)
 head(polling)
 
-#Combining Cleaned data 
+##Polled Party
+polled_party <- str_extract(polling$Population, "-.*")
+polled_party <- gsub("- ", "", polled_party)
+polling$polled_party <- polled_party
+
+##Voters
+voter <- str_extract(polling$Population, "^.* ")
+voter <- gsub(" - ", "", voter)
+polling$voter <- voter
+
+
+
+#Combining Cleaned data
+
 
 #merge all dataframes here and then write it to a csv file
 #merge polling, campaign_exp, and gop_twitter, if you can even do that?? idk 
