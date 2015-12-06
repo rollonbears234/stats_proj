@@ -55,7 +55,7 @@ deb_time
 library(stringr)
 hashtags <- str_extract(gop_tweets$text, "#.*")
 hashtags <- gsub(" [[:alpha:]].*", "", hashtags)
-goptweets$hashtags <- hashtags
+gop_tweets$hashtags <- hashtags
 
 
 #Campaign Contribution Cleaning 
@@ -87,4 +87,7 @@ polling$voter <- voter
 
 #merge all dataframes here and then write it to a csv file
 #merge polling, campaign_exp, and gop_twitter, if you can even do that?? idk 
-write.csv(file = "data/republican_race.csv", combined_df here)
+
+write.csv(file = "data/republican_race_polling.csv", polling)
+write.csv(file = "data/republican_race_campaign.csv", campaign_exp)
+write.csv(file = "data/republican_race_tweets.csv", gop_tweets)
