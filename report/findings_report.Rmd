@@ -1,0 +1,16 @@
+---
+title: "Findings/Report"
+author: "Bryan Alcorn"
+date: "December 6, 2015"
+output: pdf_document
+---
+
+Problem: 
+
+Description of the Data: 
+
+Describe the Analysis Approach 
+
+include descriptions of table, images, results 
+
+(max 10 pages)
