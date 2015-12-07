@@ -16,19 +16,23 @@ Candidate <- gsub("No candidate mentioned", "NA", Candidate)
 gop_tweets$Candidate <- Candidate
 
 
-##Time and Date
+##Time
 gop_tweets$tweet_created <- gsub(" -0700$", "", gop_tweets$tweet_created)
 
 time <- gop_tweets$tweet_created
 time <- gsub("^2015-08-0[67] ", "", time)
 gop_tweets$time <- time
 
+
+##Date
 date <- gop_tweets$tweet_created
 date <- gsub(" -0700$", "", date)
-date <- gsub(" [0123456789]{2}:[0123456789]{2}:[0123456789]{2}$", "", date)
+date <- gsub(" ([0123456789]{2}:){2}[0123456789]{2}$", "", date)
 date <- gsub("-", "/", date)
 gop_tweets$date <- date
 
+
+##Debate Time
 install.packages("chron")
 library("chron")
 
@@ -36,13 +40,23 @@ gop_tweets$time <- chron(time = gop_tweets$time)
 
 gop_tweets$date <- chron(date = gop_tweets$date, format = "y/m/d")
 
-##Debate Time
 start <- as.POSIXct("21:00:00", format="%H:%M:%S")
 
 debate_time <- function(time, date) {
   for (i in length(gop_tweets$time)) {
     if (as.POSIXct(gop_tweets$tweet_created[1], format = "%Y-%m-%d %H:%M:%S") - as.POSIXct("2015-08-06 21:00:00", format = "%Y-%m-%d %H:%M:%S") > 0)
     {time[i] <- "During"}
+  }
+}
+
+position <- c()
+debate_time <- function(time) {
+  for (i in length(gop_tweets$time)) {
+    if (as.POSIXct(time[i], format = "%Y-%m-%d %H:%M:%S") - as.POSIXct("2015-08-06 21:00:00", format = "%Y-%m-%d %H:%M:%S") > 0 & 
+        as.POSIXct(time[i], format = "%Y-%m-%d %H:%M:%S") - as.POSIXct("2015-08-06 23:00:00", format = "%Y-%m-%d %H:%M:%S") < 0)
+    {position[i] <- "During"}
+    if (as.POSIXct(time[i], format = "%Y-%m-%d %H:%M:%S") - as.POSIXct("2015-08-06 21:00:00", format = "%Y-%m-%d %H:%M:%S") < 0)
+    {position[i] <- "Before"} else {position[i] <-  "After"}
   }
 }
 
