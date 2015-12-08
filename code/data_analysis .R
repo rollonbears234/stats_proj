@@ -15,11 +15,12 @@ cand_v_conf <- aggregate(tweets$candidate.confidence,
           by=list(tweets$candidate), FUN=mean)
 
 cand_v_conf <- cand_v_conf[-1,]
-cand_v_conf$Avg_Confidence <- round(cand_v_conf$Avg_Confidence, 2)
 colnames(cand_v_conf) <- c("Candidate", "Avg_Confidence")
+cand_v_conf$Avg_Confidence <- round(cand_v_conf$Avg_Confidence, 2)
 
 
-#why is No Candidate Mentioned not NA  
+
+#why is No Candidate Mentioned not NA, use the new Column todd made 
 ggplot(data = cand_v_conf, aes(x = Candidate, y = Avg_Confidence)) + 
   geom_bar(stat="identity", width = .7) + 
   ylim(0, 1) +
@@ -33,8 +34,7 @@ summary(tweets$candidate.confidence) #notice 3rd Qu. is still 1.
 tweets$candidate[which.min(tweets$candidate.confidence)] #Not useful, a candidate wasn't mentioned 
 
  
-#hashtags, and subject matter by candidate, like the max for each to see what each one talked about 
-#also use the before and after thing, see if sentiments change 
+
 #shows that Donald Trump got a majority of targeted Tweets, this will skew some of the data since he represents such a large portion 
 ggplot(data = tweets, aes(x = candidate)) + 
          geom_histogram(binwidth = 1) +
@@ -48,10 +48,21 @@ ggplot(data = tweets, aes(x = sentiment)) +
   geom_histogram() + 
   ggtitle("Counts of Each Sentiment")
 
+#Subject 
+ggplot(data = tweets, aes(x = subject_matter)) + 
+  geom_histogram() + 
+  ggtitle("Subject Matter ") +
+  theme(axis.text.x = element_text(color="#993333", 
+                                   size=10, angle=30)) 
 
+#Hashtags, list only the most popular ones  
+ggplot(data = tweets, aes(x = hashtags)) +
+  geom_histogram() + 
+  ggtitle("All of the Hashtags") +
+  theme(axis.text.x = element_text(color="#993333", 
+                                   size=10, angle=30))
 
-#use Arcplot to pair mentions of candidates in tweets!! 
-#Go through the text, if two candidates appear then include them as a pair, then do an arc diagram on that
+#Arcplot of connections between the candidates 
 candidates_paired <- c()
 cand_list <- levels(tweets$candidate)
 cand_list <- cand_list[c(-1, -9)]
@@ -75,8 +86,6 @@ for (i in 1:length(names(cand_mention))) {
   cand_mention[i] <- length(grep(nameone, tweets$tweet_text)) + length(grep(nametwo, tweets$tweet_text))
 }
 
-
-
 for (i in 1:length(paired_count)) {
   for (j in 1:2) {
     first_c1 <- str_split(candidates_paired[i,][1], " ")[[1]][1]
@@ -97,8 +106,6 @@ for (i in 1:length(paired_count)) {
   }
 }
 
-
-
 paired_weight <- (paired_count / max(paired_count)) * 10
 mention_weight <- (cand_mention / (max(cand_mention))) * 10
 
@@ -108,11 +115,9 @@ arcplot(edgelist = candidates_paired[,c(1,2)], lwd.arcs = paired_weight, cex.nod
 
 #Analysa Polling information 
 
-#it would be cool to make on line graph with at least fice of the top candidates 
-#do one for the broad dates and one that is centered around the first debate, compare before and after 
 polling <- read.csv("data/republican_race_polling.csv")
 
-#ablines for each candidate 
+#ablines for each candidate, Ted Cruz, Donald Trump, Bush, Walker, Huckabee 
 #average over every source !!
 avg_polling_trump <- aggregate(polling$Trump,
                          by=list(polling$Pollster), FUN=mean)
@@ -124,7 +129,6 @@ ggplot(data = polling, aes(Entry.Date.Time..ET.)) +
 
 #Analysa Expenditure Data 
 
-#you should just see who is gettin the most money and look at only the money given around the debate and see if it impacts pollling
 expenditure <- read.csv("data/republican_race_campaign.csv")
 
 
@@ -132,7 +136,6 @@ expenditure <- read.csv("data/republican_race_campaign.csv")
 
 #the main idea is to see if we can predict who did better by tweets, and then look at polling to see if this is true and
 #control for confouding variabkes by looking at expenditure 
-
 #then run a test for significance 
 
 
