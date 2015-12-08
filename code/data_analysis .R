@@ -48,6 +48,12 @@ ggplot(data = tweets, aes(x = sentiment)) +
   geom_histogram() + 
   ggtitle("Counts of Each Sentiment")
 
+just_trump <- subset(tweets, Candidate == "Donald Trump")
+
+ggplot(data = just_trump, aes(x = sentiment)) + 
+  geom_histogram() + 
+  ggtitle("Sentiment for Trump")
+
 #Subject 
 ggplot(data = tweets, aes(x = subject_matter)) + 
   geom_histogram() + 
@@ -131,7 +137,23 @@ ggplot(data = smaller_polling, aes(compare_date)) +
   geom_line(aes(y = Walker, colour = "Walker")) + 
   geom_line(aes(y = Cruz, colour = "Cruz")) + 
   geom_line(aes(y = Carson, colour = "Carson"))
-  
+
+polling_around_debate <-  subset(polling, 
+          (compare_date > as.POSIXct("2015-08-01 21:00:00", 
+            format = "%Y-%m-%d %H:%M:%S")) & 
+          (compare_date < as.POSIXct("2015-08-15 21:00:00", 
+            format = "%Y-%m-%d %H:%M:%S")))
+
+ggplot(data = polling_around_debate, aes(compare_date)) +
+  geom_line(aes(y = Trump, colour = "Trump", size = 1)) + 
+  geom_line(aes(y = Bush, colour = "Bush", size = 1)) +  
+  geom_line(aes(y = Huckabee, colour = "Huckabee", size = 1)) + 
+  geom_line(aes(y = Walker, colour = "Walker", size = 1)) + 
+  geom_line(aes(y = Cruz, colour = "Cruz", size = 1)) + 
+  geom_line(aes(y = Carson, colour = "Carson", size = 1)) +
+  geom_line(aes(y = Fiorina, colour = "Fiorina", size = 1)) 
+  #geom_abline(intercept = as.POSIXct("2015-08-06 21:00:00", 
+   #                                  format = "%Y-%m-%d %H:%M:%S"), slope = 1)
   
 
 

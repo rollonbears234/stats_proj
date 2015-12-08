@@ -33,8 +33,6 @@ gop_tweets$date <- date
 
 
 ##Debate Time
-install.packages("chron")
-library("chron")
 
 debate_time <- function(time) {
   position <- rep(" ", times = length(gop_tweets$time))
@@ -105,6 +103,10 @@ for (i in 1:length(polling$Entry.Date.Time..ET.)) {
   new_time[i] <- as.POSIXct(polling$date_time[i], format = "%Y-%m-%d %H:%M:%S")
 }
 polling$compare_date <- new_time
+
+##Date
+date <- gsub(" .*$", "", polling$date_time)
+polling$date <- date
 
 #Combining Cleaned data
 write.csv(file = "data/republican_race_polling.csv", polling)
