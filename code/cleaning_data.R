@@ -36,41 +36,41 @@ gop_tweets$date <- date
 install.packages("chron")
 library("chron")
 
-gop_tweets$time <- chron(time = gop_tweets$time)
-
-gop_tweets$date <- chron(date = gop_tweets$date, format = "y/m/d")
-
-start <- as.POSIXct("21:00:00", format="%H:%M:%S")
-
-debate_time <- function(time, date) {
-  for (i in length(gop_tweets$time)) {
-    if (as.POSIXct(gop_tweets$tweet_created[1], format = "%Y-%m-%d %H:%M:%S") - as.POSIXct("2015-08-06 21:00:00", format = "%Y-%m-%d %H:%M:%S") > 0)
-    {time[i] <- "During"}
-  }
-}
-
-position <- c()
 debate_time <- function(time) {
-  for (i in length(gop_tweets$time)) {
-    if (as.POSIXct(time[i], format = "%Y-%m-%d %H:%M:%S") - as.POSIXct("2015-08-06 21:00:00", format = "%Y-%m-%d %H:%M:%S") > 0 & 
-        as.POSIXct(time[i], format = "%Y-%m-%d %H:%M:%S") - as.POSIXct("2015-08-06 23:00:00", format = "%Y-%m-%d %H:%M:%S") < 0)
-    {position[i] <- "During"}
-    if (as.POSIXct(time[i], format = "%Y-%m-%d %H:%M:%S") - as.POSIXct("2015-08-06 21:00:00", format = "%Y-%m-%d %H:%M:%S") < 0)
-    {position[i] <- "Before"} else {position[i] <-  "After"}
+  position <- rep(" ", times = length(gop_tweets$time))
+  for (i in 1:length(gop_tweets$time)) {
+    if (as.POSIXct(time[i], format = "%Y-%m-%d %H:%M:%S") - 
+        as.POSIXct("2015-08-06 17:00:00", format = "%Y-%m-%d %H:%M:%S") > 0 & 
+        as.POSIXct(time[i], format = "%Y-%m-%d %H:%M:%S") - 
+        as.POSIXct("2015-08-06 23:00:00", format = "%Y-%m-%d %H:%M:%S") < 0) {
+      position[i] <- "During"
+    }
+    if (as.POSIXct(time[i], format = "%Y-%m-%d %H:%M:%S") - 
+        as.POSIXct("2015-08-06 17:00:00", format = "%Y-%m-%d %H:%M:%S") < 0) {
+      position[i] <- "Before"
+    } 
+    else {
+      position[i] <-  "After"
+    }
   }
+  return(position)
 }
 
-
-
-deb_time <- debate_time(time = gop_tweets$time)
-deb_time
+relative_time <- debate_time(time = gop_tweets$tweet_created)
+gop_tweets$relative_time <- relative_time
 
 ##Hashtags
 library(stringr)
 hashtags <- str_extract(gop_tweets$text, "#.*")
 hashtags <- gsub(" [[:alpha:]].*", "", hashtags)
+hashtags <- gsub("@.* ", "", hashtags)
+hashtags <- gsub("[.:?,@(-].*", "", hashtags)
 gop_tweets$hashtags <- hashtags
 
+#Hashtags_2
+hashtags_2 <- gsub("#GOPDebate", "", gop_tweets$hashtags, ignore.case = TRUE)
+hashtags_2 <- str_extract(hashtags_2, "#.*")
+gop_tweets$hashtags_2 <- hashtags_2
 
 #Campaign Contribution Cleaning 
 
@@ -94,14 +94,19 @@ voter <- str_extract(polling$Population, "^.* ")
 voter <- gsub(" - ", "", voter)
 polling$voter <- voter
 
+##Date and Time
+date_time <- gsub("2000-01-01 ", "", polling$Entry.Date.Time..ET.)
+date_time <- gsub(" UTC", "", date_time)
+polling$date_time <- date_time
 
+
+new_time <- c("")
+for (i in 1:length(polling$Entry.Date.Time..ET.)) {
+  new_time[i] <- as.POSIXct(polling$date_time[i], format = "%Y-%m-%d %H:%M:%S")
+}
+polling$compare_date <- new_time
 
 #Combining Cleaned data
-
-
-#merge all dataframes here and then write it to a csv file
-#merge polling, campaign_exp, and gop_twitter, if you can even do that?? idk 
-
 write.csv(file = "data/republican_race_polling.csv", polling)
 write.csv(file = "data/republican_race_campaign.csv", campaign_exp)
 write.csv(file = "data/republican_race_tweets.csv", gop_tweets)

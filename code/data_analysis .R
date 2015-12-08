@@ -56,7 +56,7 @@ ggplot(data = tweets, aes(x = subject_matter)) +
                                    size=10, angle=30)) 
 
 #Hashtags, list only the most popular ones  
-ggplot(data = tweets, aes(x = hashtags)) +
+ggplot(data = tweets, aes(x = hashtags_2)) +
   geom_histogram() + 
   ggtitle("All of the Hashtags") +
   theme(axis.text.x = element_text(color="#993333", 
@@ -119,18 +119,25 @@ polling <- read.csv("data/republican_race_polling.csv")
 
 #ablines for each candidate, Ted Cruz, Donald Trump, Bush, Walker, Huckabee 
 #average over every source !!
-avg_polling_trump <- aggregate(polling$Trump,
-                         by=list(polling$Pollster), FUN=mean)
-ggplot(data = polling, aes(Entry.Date.Time..ET.)) +
-  geom_line(aes(y = Trump, colours = "Trump"))
 
+smaller_polling <- subset(polling, 
+                          compare_date > as.POSIXct("2015-06-15 21:00:00", 
+                                         format = "%Y-%m-%d %H:%M:%S"))
 
+ggplot(data = smaller_polling, aes(compare_date)) +
+  geom_line(aes(y = Trump, colour = "Trump")) + 
+  geom_line(aes(y = Bush, colour = "Bush")) +  
+  geom_line(aes(y = Huckabee, colour = "Huckabee")) + 
+  geom_line(aes(y = Walker, colour = "Walker")) + 
+  geom_line(aes(y = Cruz, colour = "Cruz")) + 
+  geom_line(aes(y = Carson, colour = "Carson"))
+  
+  
 
 
 #Analysa Expenditure Data 
 
 expenditure <- read.csv("data/republican_race_campaign.csv")
-
 
 
 
