@@ -33,8 +33,7 @@ summary(tweets$candidate.confidence) #notice 3rd Qu. is still 1.
 tweets$candidate[which.min(tweets$candidate.confidence)] #Not useful, a candidate wasn't mentioned 
 
  
-#hashtags, and subject matter by candidate, like the max for each to see what each one talked about , arc diagram 
-#maybe we should go back and look at what some of the data categories mean 
+#hashtags, and subject matter by candidate, like the max for each to see what each one talked about 
 #also use the before and after thing, see if sentiments change 
 #shows that Donald Trump got a majority of targeted Tweets, this will skew some of the data since he represents such a large portion 
 ggplot(data = tweets, aes(x = candidate)) + 
@@ -50,6 +49,7 @@ ggplot(data = tweets, aes(x = sentiment)) +
   ggtitle("Counts of Each Sentiment")
 
 
+
 #use Arcplot to pair mentions of candidates in tweets!! 
 #Go through the text, if two candidates appear then include them as a pair, then do an arc diagram on that
 candidates_paired <- c()
@@ -63,19 +63,46 @@ for (i in 1:(length(cand_list) - 1)) {
 }
 arcplot(candidates_paired)
 
-#adding weights to the matrix to help color the arc diagram
-#I want to have the nodes reflect candidate mentiones and lines to reflect who was mentioned in context 
 cand_mention <- rep(0, times = 11)
 names(cand_mention) <- cand_list
 paired_count <- rep(0, times = 55)
-for (tweet in tweets$tweet_text) {
-  
+
+all_names <- str_split(cand_list, " ")
+
+for (i in 1:length(names(cand_mention))) {
+  nameone <- all_names[[i]][1]
+  nametwo <- all_names[[i]][2]
+  cand_mention[i] <- length(grep(nameone, tweets$tweet_text)) + length(grep(nametwo, tweets$tweet_text))
 }
+
+
+
+for (i in 1:length(paired_count)) {
+  for (j in 1:2) {
+    first_c1 <- str_split(candidates_paired[i,][1], " ")[[1]][1]
+    last_c1 <- str_split(candidates_paired[i,][1], " ")[[1]][2]
+    cand_2 <- str_split(candidates_paired[i,][2], " ")[[1]][j] 
+    paired_count[i] <- length(grep(
+      paste(first_c1, ".*",
+            cand_2, "|", 
+            cand_2, ".*",
+            first_c1, sep = "")
+      , tweets$tweet_text, ignore.case = TRUE)) +
+      length(grep(
+        paste(last_c1, ".*",
+              cand_2, "|", 
+              cand_2, ".*",
+              last_c1, sep = "")
+        , tweets$tweet_text, ignore.case = TRUE))
+  }
+}
+
+
+
 paired_weight <- (paired_count / max(paired_count)) * 10
 mention_weight <- (cand_mention / (max(cand_mention))) * 10
 
-#even out the weight, do like (pairedcount / max(paired_count)) * 10
-arcplot(edgelist = candidates_paired[,c(1,2)], lwd.arcs = paired_count, cex.nodes = cand_mention)
+arcplot(edgelist = candidates_paired[,c(1,2)], lwd.arcs = paired_weight, cex.nodes = mention_weight)
 
 
 
