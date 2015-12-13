@@ -1,3 +1,6 @@
+#add library
+library(stringr)
+
 #GOP Candidate Information Cleaning 
 
 gop_tweets <- read.csv("rawdata/twitter_debate.csv")
@@ -72,10 +75,21 @@ gop_tweets$hashtags_2 <- hashtags_2
 
 #Campaign Contribution Cleaning 
 
-campaign_exp <- read.csv("rawdata/ind_expenditure.csv")
-summary(campaign_exp)
-head(campaign_exp)
+expenditure <- read.csv("rawdata/ind_expenditure.csv")
+summary(expenditure)
+head(expenditure)
 
+expenditure$can_nam <- gsub(",.*", "", expenditure$can_nam)
+expenditure$can_nam <- toupper(expenditure$can_nam)
+expenditure$agg_amo <- gsub("\\$", "", expenditure$agg_amo)
+expenditure$agg_amo <- gsub(",", "", expenditure$agg_amo)
+expenditure$agg_amo <- as.numeric(expenditure$agg_amo)
+
+expenditure$rec_dat <- gsub("\\/", "-", expenditure$rec_dat)
+newdate <- strptime(as.character(expenditure$rec_dat), "%m-%d-%Y")
+newdate <- format(newdate, "%Y-%m-%d") 
+as.POSIXct(newdate)
+expenditure$rec_dat <- gsub(" PDT", "", newdate)
 
 #Polling information
 polling <- read.csv("rawdata/polling.csv")
@@ -110,5 +124,5 @@ polling$date <- date
 
 #Combining Cleaned data
 write.csv(file = "data/republican_race_polling.csv", polling)
-write.csv(file = "data/republican_race_campaign.csv", campaign_exp)
+write.csv(file = "data/republican_race_campaign.csv", expenditure)
 write.csv(file = "data/republican_race_tweets.csv", gop_tweets)
