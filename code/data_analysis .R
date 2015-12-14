@@ -71,8 +71,7 @@ ggplot(data = tweets, aes(x = subject_matter)) +
 
 #Arcplot of connections between the candidates 
 candidates_paired <- c()
-cand_list <- levels(tweets$candidate)
-cand_list <- cand_list[c(-1, -9)]
+cand_list <- levels(tweets$Candidate)
 cand_list <- c(cand_list, "Carly Fiorina")
 for (i in 1:(length(cand_list) - 1)) {
   for (j in (i + 1):(length(cand_list))) {
