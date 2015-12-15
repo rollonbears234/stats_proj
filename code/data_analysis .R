@@ -8,7 +8,8 @@ library(ggplot2)
 library(stringr)
 
 #Analyza Tweets 
-tweets <- read.csv("data/republican_race_tweets.csv", na.strings = c("", "NA"))
+tweets <- read.csv("data/republican_race_tweets.csv", 
+                   na.strings = c("", "NA"))
 
 
 #Plotting Candidate and thier average confidence 
@@ -21,7 +22,7 @@ cand_v_conf$Avg_Confidence <- round(cand_v_conf$Avg_Confidence, 2)
 
 
 
-#why is No Candidate Mentioned not NA, use the new Column todd made 
+#Not very helpful
 ggplot(data = cand_v_conf, aes(x = Candidate, y = Avg_Confidence)) + 
   geom_bar(stat="identity", width = .7) + 
   ylim(0, 1) +
@@ -36,7 +37,8 @@ tweets$candidate[which.min(tweets$candidate.confidence)] #Not useful, a candidat
 
  
 
-#shows that Donald Trump got a majority of targeted Tweets, this will skew some of the data since he represents such a large portion 
+#shows that Donald Trump got a majority of targeted Tweets, this will 
+#skew some of the data since he represents such a large portion 
 ggplot(data = tweets, aes(x = Candidate)) + 
          geom_histogram(binwidth = 1) +
   theme(axis.text.x = element_text(color="#993333", 
@@ -44,7 +46,7 @@ ggplot(data = tweets, aes(x = Candidate)) +
   ggtitle("Candidates Mentioned")
 
 
-#sendiments, there are more negative than positive sentiments. overwhelmingly 
+#sentiments, there are more negative than positive sentiments. Overwhelmingly so.
 ggplot(data = tweets, aes(x = sentiment)) + 
   geom_histogram() + 
   ggtitle("Counts of Each Sentiment")
@@ -55,7 +57,7 @@ ggplot(data = just_trump, aes(x = sentiment)) +
   geom_histogram() + 
   ggtitle("Sentiment for Trump")
 
-#Subject 
+#Subjects covered in the debate.
 ggplot(data = tweets, aes(x = subject_matter)) + 
   geom_histogram() + 
   ggtitle("Subject Matter ") +
@@ -75,7 +77,8 @@ cand_list <- levels(tweets$Candidate)
 cand_list <- c(cand_list, "Carly Fiorina")
 for (i in 1:(length(cand_list) - 1)) {
   for (j in (i + 1):(length(cand_list))) {
-    candidates_paired <- rbind(candidates_paired, c(cand_list[i], cand_list[j]))  
+    candidates_paired <- rbind(candidates_paired, c(cand_list[i], 
+                                                    cand_list[j]))  
   }
 }
 arcplot(candidates_paired)
@@ -89,7 +92,8 @@ all_names <- str_split(cand_list, " ")
 for (i in 1:length(names(cand_mention))) {
   nameone <- all_names[[i]][1]
   nametwo <- all_names[[i]][2]
-  cand_mention[i] <- length(grep(nameone, tweets$tweet_text)) + length(grep(nametwo, tweets$tweet_text))
+  cand_mention[i] <- length(grep(nameone, tweets$tweet_text)) + 
+    length(grep(nametwo, tweets$tweet_text))
 }
 
 for (i in 1:length(paired_count)) {
@@ -120,17 +124,15 @@ arcplot(edgelist = candidates_paired[,c(1,2)],
 
 
 
-#Analysa Polling information 
+#Analysis Polling information 
 
 polling <- read.csv("data/republican_race_polling.csv")
-
-#ablines for each candidate, Ted Cruz, Donald Trump, Bush, Walker, Huckabee 
-#average over every source !!
 
 smaller_polling <- subset(polling, 
                           compare_date > as.POSIXct("2015-06-15 21:00:00", 
                                          format = "%Y-%m-%d %H:%M:%S"))
 
+#Candidate polling 
 ggplot(data = smaller_polling, aes(compare_date, color = "Candidates")) +
   ylab("Polling Percentage") +
   xlab("Dates after June 2015") +
@@ -140,7 +142,8 @@ ggplot(data = smaller_polling, aes(compare_date, color = "Candidates")) +
   geom_line(aes(y = Walker, colour = "Walker")) + 
   geom_line(aes(y = Cruz, colour = "Cruz")) + 
   geom_line(aes(y = Carson, colour = "Carson")) +
-  theme(legend.background = element_rect(fill="gray90", size=.5, linetype="dotted"))
+  theme(legend.background = element_rect(fill="gray90", size=.5, 
+                                         linetype="dotted"))
 
 polling_around_debate <-  subset(polling, 
           (compare_date > as.POSIXct("2015-08-01 21:00:00", 
@@ -162,7 +165,7 @@ ggplot(data = polling_around_debate, aes(compare_date, color = "Candidates")) +
   
 
 
-#Analysa Expenditure Data 
+#Analysis of Expenditure Data 
 
 expenditure <- read.csv("data/republican_race_campaign.csv")
 
@@ -191,7 +194,8 @@ pie_funding <- ggplot(df, aes(x="", y = Expenditure, fill = Candidate)) +
 pie_funding + coord_polar("y", start=0)
 
 #Funding around the time of the debate
-debate_spending <- ggplot(df, aes(y = Expenditure, x = Candidate, fill = Candidate)) +
+debate_spending <- ggplot(df, aes(y = Expenditure, 
+                                  x = Candidate, fill = Candidate)) +
   geom_bar(stat = "identity") +
   ggtitle("Aggregate Funding Around Time of Debate")
 debate_spending
@@ -199,6 +203,6 @@ debate_spending
 
 #the main idea is to see if we can predict who did better by tweets, and then look at polling to see if this is true and
 #control for confouding variabkes by looking at expenditure 
-#then run a test for significance 
+
 
 

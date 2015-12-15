@@ -17,8 +17,8 @@ The skeleton.R will build the subdirectiories and gather all of the data. The sk
 
 Specific Instructions or Comments:
 
-There is a lot more potential with this project. The datasets contained a lot more information than we actually used. This is just preliminary analysis. There are other ways to quantify success in a debate, in our project, we analyzed success as number of times mentioned. This is valid under our model because we assume all press is good press, whether good sentiment or bad. 
+There is a lot of potential with this project. The datasets contained a lot more information than we actually used. This is just preliminary analysis. There are other ways to quantify success in a debate, in our project, we analyzed success as number of times mentioned. This is valid under our model because we assume all press is good press, whether good sentiment or bad. 
 
 License to Share code:
 
-This code can be shared as long as it's creators are cited. 
+This code can be shared as long as its creators are cited. 
